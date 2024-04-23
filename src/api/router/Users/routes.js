@@ -1,5 +1,5 @@
 import express from 'express'
-import { authUsers, changePasswordUsers, createUsers, deleteUsers, getUsers, getUsersById, loginUsers, updateUsers } from '../controllers/Users'
+import { authUsers, changePasswordUsers, createUsers, deleteUsers, getUsers, getUsersById, loginUsers, updateUsers } from '../../controllers/Users'
 import rateLimit from 'express-rate-limit'
 
 const users_routes = express.Router()
