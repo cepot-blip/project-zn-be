@@ -13,11 +13,17 @@ app.use((req, res, next) => {
   // REQUEST METHODS YOU WISH TO ALLOW
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD"
+    "GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD",
+    "X-Requested-With,content-type"
   );
 
   // REQUEST HEADERS YOU WISH TO ALLOW
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Access-Control-Allow-Headers", 
+    "Content-Type, Authorization"
+  );
+      // COOKIES
+  res.setHeader("Access-Control-Allow-Credentials", true);
 
   // PASS TO NEXT LAYER OF MIDDLEWARE
   next();
@@ -46,7 +52,7 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: false }));
 
 // ROUTES
-app.use("/api", users_routes);
+app.use("/api_v1", users_routes);
 
 
 // HANDLE ERRORS
