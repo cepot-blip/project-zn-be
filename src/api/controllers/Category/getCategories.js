@@ -6,7 +6,9 @@ env.config();
 
 export const getCategories = async (req = request, res = response) => {
   try {
-    const result = await CategoryModels.findMany();
+    const result = await CategoryModels.findMany({
+      orderBy : {id : "desc"}
+    });
 
     return res.status(200).json({
       status: true,

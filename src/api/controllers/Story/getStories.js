@@ -7,6 +7,7 @@ env.config();
 
 export const getStories = async (req = request, res = response) => {
   try {
+    const {filter} = await req.body
     const userJWTTokenValue = await JWTValue(req, res);
     const user_id = userJWTTokenValue.id;
 
@@ -24,6 +25,7 @@ export const getStories = async (req = request, res = response) => {
     }
 
     const result = await StoryModels.findMany({
+      orderBy : {id : "desc"},
       include: {
         category: {
           select: {

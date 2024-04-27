@@ -23,7 +23,9 @@ export const getComments = async (req = request, res = response) => {
       });
     }
 
-    const result = await CommentModels.findMany({});
+    const result = await CommentModels.findMany({
+      orderBy : {id : "desc"}
+    });
 
     return res.status(200).json({
       status: true,
