@@ -19,11 +19,13 @@ export const getComments = async (req = request, res = response) => {
     if (!checkUserId) {
       return res.status(400).json({
         status: false,
-        message: "User doesn't existed ",
+        message: "User doesn't existed",
       });
     }
 
-    const result = await CommentModels.findMany({});
+    const result = await CommentModels.findMany({
+      orderBy : {id : "desc"}
+    });
 
     return res.status(200).json({
       status: true,

@@ -24,6 +24,7 @@ export const getStories = async (req = request, res = response) => {
     }
 
     const result = await StoryModels.findMany({
+      orderBy : {id : "desc"},
       include: {
         category: {
           select: {

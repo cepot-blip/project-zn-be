@@ -7,7 +7,26 @@ export const getUsersById = async (req = request, res = response) => {
 		const result = await UsersModels.findUnique({
             where : {
                 id : parseInt(id),
-            }
+            },
+            include : {
+				story : {
+					select : {
+						id : true,
+						title : true,
+						content : true,
+						postedAt : true,
+						category_id : true,
+					}
+				},
+				comment : {
+					select : {
+						id : true,
+						story_id : true,
+						content : true,
+						commentAt : true
+					}
+				}
+			}
         })
 		
 		res.status(200).json({

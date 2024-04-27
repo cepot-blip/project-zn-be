@@ -1,7 +1,10 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import users_routes from "./api/router/Users/routes";
+import users_routes from "./api/router/Users/usersRoutes";
+import story_routes from "./api/router/Story/storyRoutes";
+import category_routes from "./api/router/Category/categoryRoutes";
+import comments_routes from "./api/router/Comments/commentsRoutes";
 
 export const app = express();
 

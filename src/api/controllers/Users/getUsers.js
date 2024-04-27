@@ -25,6 +25,25 @@ export const getUsers = async (req = request, res = response) => {
 			take: parseInt(limit),
 			orderBy: { id: "desc" },
 			where: filter,
+			include : {
+				story : {
+					select : {
+						id : true,
+						title : true,
+						content : true,
+						postedAt : true,
+						category_id : true,
+					}
+				},
+				comment : {
+					select : {
+						id : true,
+						story_id : true,
+						content : true,
+						commentAt : true
+					}
+				}
+			}
         })
 		
         const conn = await UsersModels.count()
