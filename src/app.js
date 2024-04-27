@@ -18,17 +18,13 @@ app.use((req, res, next) => {
   );
 
   // REQUEST HEADERS YOU WISH TO ALLOW
-  res.setHeader(
-    "Access-Control-Allow-Headers", 
-    "Content-Type, Authorization"
-  );
-      // COOKIES
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  // COOKIES
   res.setHeader("Access-Control-Allow-Credentials", true);
 
   // PASS TO NEXT LAYER OF MIDDLEWARE
   next();
 });
-
 
 app.set("trust proxy", false);
 
@@ -53,7 +49,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // ROUTES
 app.use("/api_v1", users_routes);
-
+app.use("/api_v1", story_routes);
+app.use("/api_v1", category_routes);
+app.use("/api_v1", comments_routes);
 
 // HANDLE ERRORS
 app.use((error, req, res, next) => {
@@ -64,4 +62,4 @@ app.use((error, req, res, next) => {
   });
 });
 
-export default app
+export default app;

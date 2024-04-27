@@ -21,4 +21,55 @@ model Users {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  story   Story[]
+  comment Comment[]
+}
+
+model Story {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  title       String
+  content     String
+  postedAt    DateTime @updatedAt
+  category_id Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  users    Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+  comment Comment[]
+}
+
+model Category {
+  id            Int           @id @default(autoincrement())
+  category_name Category_name
+  description   String
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+
+  story Story[]
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  story_id   Int
+  content    String
+  commentAt  DateTime @updatedAt
+  create_at  DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  users Users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  story Story @relation(fields: [story_id], references: [id], onDelete: Cascade)
+}
+
+enum Category_name {
+  berita
+  teknologi
+  olahraga
+  wisata
+  lifestyle
+  hiburan
 }
