@@ -19,7 +19,7 @@ export const getComments = async (req = request, res = response) => {
     if (!checkUserId) {
       return res.status(400).json({
         status: false,
-        message: "User doesn't existed ",
+        message: "User doesn't existed",
       });
     }
 
