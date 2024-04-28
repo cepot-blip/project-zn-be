@@ -1,16 +1,16 @@
 import { request, response } from "express";
 import NotFoundError from "../../../utils/exceptions/NotFoundError";
-import { avatarModel } from "../../../models/Models";
+import avatarService from "../../../lib/services/Avatar";
 
 const deleteAvatarById = async (req = request, res = response) => {
   const { id } = req.params;
 
-  const avatar = await avatarModel.findUnique({ where: { id: parseInt(id) } });
+  const avatar = await avatarService.getAvatarById(Number(id));
   if (!avatar) {
     throw new NotFoundError("Avatar not found, put valid id");
   }
 
-  await avatarModel.delete({ where: { id: parseInt(id) } });
+  await avatarService.deleteAvatarById(Number(id));
 
   return res.status(200).json({
     status: true,

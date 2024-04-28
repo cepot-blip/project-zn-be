@@ -1,8 +1,8 @@
 import { request, response } from "express";
-import { avatarModel } from "../../../models/Models";
+import avatarService from "../../../lib/services/Avatar";
 
 const getAvatars = async (req = request, res = response) => {
-  const avatars = await avatarModel.findMany();
+  const avatars = await avatarService.getAvatars();
 
   return res.status(200).json({
     status: true,

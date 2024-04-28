@@ -2,6 +2,7 @@ import { request, response } from "express";
 import NotFoundError from "../../../utils/exceptions/NotFoundError";
 import { avatarModel } from "../../../models/Models";
 import InvariantError from "../../../utils/exceptions/InvariantError";
+import avatarService from "../../../lib/services/Avatar";
 
 const updateAvatarById = async (req = request, res = response) => {
   const { id } = req.params;
@@ -11,15 +12,12 @@ const updateAvatarById = async (req = request, res = response) => {
     throw new InvariantError("Image link is required");
   }
 
-  const avatar = await avatarModel.findUnique({ where: { id: parseInt(id) } });
+  const avatar = await avatarService.getAvatarById(Number(id));
   if (!avatar) {
     throw new NotFoundError("Avatar not found, put valid id");
   }
 
-  await avatarModel.update({
-    where: { id: parseInt(id) },
-    data: { image_link },
-  });
+  await avatarService.updateAvatarById(Number(id), { image_link });
 
   return res.status(200).json({
     status: true,
