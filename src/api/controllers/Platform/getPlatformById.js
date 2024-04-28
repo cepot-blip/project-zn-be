@@ -1,15 +1,11 @@
 import { request, response } from "express";
-import { platformModel } from "../../../models/Models";
 import NotFoundError from "../../../utils/exceptions/NotFoundError";
+import platformService from "../../../lib/services/Platform";
 
 const getPlatformById = async (req = request, res = response) => {
   const { id } = req.params;
 
-  const platform = await platformModel.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
+  const platform = await platformService.getPlatformById(Number(id));
 
   if (!platform) {
     throw new NotFoundError("Platform not found, put valid id");

@@ -1,8 +1,8 @@
 import { request, response } from "express";
-import { platformModel } from "../../../models/Models";
+import platformService from "../../../lib/services/Platform";
 
 const getPlatforms = async (req = request, res = response) => {
-  const platforms = await platformModel.findMany();
+  const platforms = await platformService.getPlatforms();
 
   return res.status(200).json({
     status: true,
