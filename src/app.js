@@ -1,10 +1,8 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import users_routes from "./api/router/Users/usersRoutes";
-import story_routes from "./api/router/Story/storyRoutes";
-import category_routes from "./api/router/Category/categoryRoutes";
-import comments_routes from "./api/router/Comments/commentsRoutes";
+import router from "./api/router";
+import ClientError from "./utils/exceptions/ClientError";
 
 export const app = express();
 
@@ -51,17 +49,19 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: false }));
 
 // ROUTES
-app.use("/api_v1", users_routes);
-app.use("/api_v1", story_routes);
-app.use("/api_v1", category_routes);
-app.use("/api_v1", comments_routes);
+router(app);
 
 // HANDLE ERRORS
 app.use((error, req, res, next) => {
-  res.json({
-    error: {
+  if (error instanceof ClientError) {
+    return res.status(error.statusCode).json({
+      status: false,
       message: error.message,
-    },
+    });
+  }
+  return res.status(500).json({
+    status: false,
+    message: "Maaf, terjadi kesalahan pada server kami",
   });
 });
 
