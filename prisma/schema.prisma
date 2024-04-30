@@ -14,16 +14,18 @@ datasource db {
 }
 
 model Users {
-  id       Int    @id @default(autoincrement())
-  username String
-  email    String @unique
-  password String
+  id              Int    @id @default(autoincrement())
+  username        String
+  email           String @unique
+  password        String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  story   Story[]
-  comment Comment[]
+  sosmed_account  Sosmed_account?
+  avatar          Avatar?
+  story           Story[]
+  comment         Comment[]
 }
 
 model Story {
@@ -65,6 +67,43 @@ model Comment {
   story Story @relation(fields: [story_id], references: [id], onDelete: Cascade)
 }
 
+model Platform {
+  id              Int             @id @default(autoincrement())
+  platform_name   PLATFORM_NAME
+  create_at       DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+
+  sosmed_account  Sosmed_account[]
+}
+
+model Sosmed_account {
+  id            Int       @id @default(autoincrement())
+  user_id       Int       @unique
+  platform_id   Int       
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  user          Users     @relation(fields: [user_id], references: [id])
+  platform      Platform  @relation(fields: [platform_id], references: [id])
+}
+
+model Avatar {
+  id          Int       @id @default(autoincrement())
+  image_link  String
+  user_id     Int       @unique
+  create_at   DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  user        Users     @relation(fields: [user_id], references: [id])
+}
+
+enum PLATFORM_NAME {
+  facebook
+  twitter
+  instagram
+  tiktok
+}
+
 enum Category_name {
   berita
   teknologi
@@ -73,3 +112,4 @@ enum Category_name {
   lifestyle
   hiburan
 }
+
