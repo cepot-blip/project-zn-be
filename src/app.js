@@ -44,6 +44,14 @@ app.use(express.urlencoded({ extended: false }));
 // ROUTES
 router(app);
 
+// 404 NOT FOUND
+app.get("*", (req, res) => {
+  res.status(404).json({
+    status: false,
+    message: "Halaman tidak ditemukan",
+  });
+});
+
 // HANDLE ERRORS
 app.use((error, req, res, next) => {
   if (error instanceof ClientError) {
