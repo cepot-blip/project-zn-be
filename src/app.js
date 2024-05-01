@@ -29,14 +29,7 @@ app.use((req, res, next) => {
 
 app.set("trust proxy", false);
 
-app.use(
-  cors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 201,
-  })
-);
+app.use(cors());
 
 app.use(
   helmet({
