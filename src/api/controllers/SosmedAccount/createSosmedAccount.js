@@ -4,12 +4,11 @@ import tokenize from "../../../utils/tokenize";
 import platformService from "../../../lib/services/Platform";
 import sosmedAccountService from "../../../lib/services/SosmedAccount";
 import NotFoundError from "../../../utils/exceptions/NotFoundError";
+import SosmedAccountValidation from "../../../validation/SosmedAccount";
 
 const createSosmedAccount = async (req = request, res = response) => {
   const { platform_id } = req.body;
-  if (!platform_id) {
-    throw new InvariantError("Platform id is required");
-  }
+  SosmedAccountValidation.validatePayloadSosmedAccount({ platform_id });
 
   const platform = await platformService.getPlatformById(Number(platform_id));
 

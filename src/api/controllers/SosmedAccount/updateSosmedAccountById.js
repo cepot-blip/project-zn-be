@@ -7,6 +7,8 @@ const updateSosmedAccountById = async (req = request, res = response) => {
   const { id } = req.params;
   const { platform_id } = req.body;
 
+  SosmedAccountValidation.validatePayloadSosmedAccount({ platform_id });
+
   const sosmedAccount = await sosmedAccountService.getSosmedAccountById(
     Number(id)
   );
