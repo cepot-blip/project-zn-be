@@ -1,47 +1,21 @@
 import { request, response } from "express";
-import env from "dotenv";
-import { JWTValue } from "../../middlewares/getTokenValue";
-import { StoryModels, UsersModels } from "../../../models/Models";
-
-env.config();
-
+import storyService from "../../../lib/services/Story";
 export const getStories = async (req = request, res = response) => {
-  try {
-    const userJWTTokenValue = await JWTValue(req, res);
-    const user_id = userJWTTokenValue.id;
+  const { page = 1, limit = 10 } = await req.query;
+  let skip = (page - 1) * limit;
 
-    const checkUserId = await UsersModels.findUnique({
-      where: {
-        id: parseInt(user_id),
-      },
-    });
+  const totalCountStory = await storyService.totalStoryData();
+  const totalPages = Math.ceil(totalCountStory / limit);
 
-    if (!checkUserId) {
-      return res.status(400).json({
-        status: false,
-        message: "User doesn't existed ",
-      });
-    }
+  const result = await storyService.getStory(skip, limit);
 
-    const result = await StoryModels.findMany({
-      orderBy : {id : "desc"},
-      include: {
-        category: {
-          select: {
-            category_name: true,
-          },
-        },
-      },
-    });
-
-    return res.status(200).json({
-      status: true,
-      query: result,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: false,
-      message: error.message,
-    });
-  }
+  return res.status(200).json({
+    status: true,
+    message: "Get story successfully",
+    total_data: totalCountStory,
+    limit: parseInt(limit),
+    page: parseInt(page),
+    total_pages: totalPages,
+    query: result,
+  });
 };

@@ -1,40 +1,28 @@
 import { request, response } from "express";
-import env from "dotenv";
-import { JWTValue } from "../../middlewares/getTokenValue";
-import { CommentModels, UsersModels } from "../../../models/Models";
-
-env.config();
+import commentService from "../../../lib/services/Comment";
 
 export const getComments = async (req = request, res = response) => {
-  try {
-    const userJWTTokenValue = await JWTValue(req, res);
-    const user_id = userJWTTokenValue.id;
+  const { storyId: story_id } = req.params;
 
-    const checkUserId = await UsersModels.findUnique({
-      where: {
-        id: parseInt(user_id),
-      },
-    });
+  const { page = 1, limit = 10 } = await req.query;
+  let skip = (page - 1) * limit;
 
-    if (!checkUserId) {
-      return res.status(400).json({
-        status: false,
-        message: "User doesn't existed",
-      });
-    }
+  const totalCountStory = await commentService.totalCommentData();
+  const totalPages = Math.ceil(totalCountStory / limit);
 
-    const result = await CommentModels.findMany({
-      orderBy : {id : "desc"}
-    });
+  const result = await commentService.getComments(
+    parseInt(story_id),
+    skip,
+    limit
+  );
 
-    return res.status(200).json({
-      status: true,
-      query: result,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: false,
-      message: error.message,
-    });
-  }
+  return res.status(200).json({
+    status: true,
+    message: "Get comment successfully",
+    total_data: totalCountStory,
+    limit: parseInt(limit),
+    page: parseInt(page),
+    total_pages: totalPages,
+    query: result,
+  });
 };

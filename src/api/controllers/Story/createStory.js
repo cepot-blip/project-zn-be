@@ -1,64 +1,44 @@
 import { request, response } from "express";
-import env from "dotenv";
-import { JWTValue } from "../../middlewares/getTokenValue";
-import {
-  StoryModels,
-  CategoryModels,
-  UsersModels,
-} from "../../../models/Models";
-
-env.config();
+import tokenize from "../../../utils/tokenize";
+import storyService from "../../../lib/services/Story";
+import categoryService from "../../../lib/services/Category";
+import NotFoundError from "../../../utils/exceptions/NotFoundError";
+import StoryValidation from "../../../validation/Story";
 
 export const createStory = async (req = request, res = response) => {
   try {
-    const { title, content, category_id } = await req.body;
-
-    const userJWTTokenValue = await JWTValue(req, res);
-    const user_id = userJWTTokenValue.id;
-
-    const checkUserId = await UsersModels.findUnique({
-      where: {
-        id: parseInt(user_id),
-      },
+    const { title, content, like_count, category_id } = await req.body;
+    StoryValidation.validatePayloadStory({
+      title,
+      content,
+      like_count,
+      category_id,
     });
 
-    if (!checkUserId) {
-      return res.status(401).json({
-        status: false,
-        message: "User not found",
-      });
+    const token = await req.headers.authorization;
+    const { id: user_id } = await tokenize.decodeJWT(token);
+
+    const checkCategoryById = await categoryService.getCategoryById(
+      category_id
+    );
+    if (!checkCategoryById) {
+      throw new NotFoundError("Category not found, put valid id");
     }
 
-    const checkCategoryId = await CategoryModels.findUnique({
-      where: {
-        id: parseInt(category_id),
-      },
-    });
-
-    if (!checkCategoryId) {
-      return res.status(401).json({
-        status: false,
-        message: "Category not found",
-      });
-    }
-
-    await StoryModels.create({
-      data: {
-        user_id: checkUserId.id,
-        title: title,
-        content: content,
-        category_id: checkCategoryId.id,
-      },
-    });
+    const data = {
+      user_id,
+      title,
+      content,
+      like_count,
+      category_id,
+    };
+    await storyService.createStory(data);
 
     return res.status(201).json({
       status: true,
       message: "Successfully created story",
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+  } catch (err) {
+    return res.status(err.statusCode || 500).json({ message: err.message });
   }
 };

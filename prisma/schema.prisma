@@ -14,40 +14,41 @@ datasource db {
 }
 
 model Users {
-  id              Int               @id @default(autoincrement())
-  username        String
-  email           String            @unique
-  password        String
+  id       Int    @id @default(autoincrement())
+  username String
+  email    String @unique
+  password String
 
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  sosmed_account  Sosmed_account?
-  avatar          Avatar?
-  story           Story[]
-  comment         Comment[]
-  reaction        Reaction[]
-  bookmark        Bookmark[]
-  like            Like[]
+  sosmed_account Sosmed_account?
+  avatar         Avatar?
+  story          Story[]
+  comment        Comment[]
+  reaction       Reaction[]
+  bookmark       Bookmark[]
+  like           Like[]
 }
 
 model Story {
-  id          Int         @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   user_id     Int
   title       String
   content     String
-  postedAt    DateTime    @updatedAt
+  postedAt    DateTime @updatedAt
+  like_count  Int      @default(0)
   category_id Int
-  created_at  DateTime    @default(now())
-  updated_at  DateTime    @updatedAt
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 
-  users       Users       @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  category    Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  users    Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
 
-  comment     Comment[]
-  reaction    Reaction[]
-  bookmark    Bookmark[]
-  like        Like[]
+  comment  Comment[]
+  reaction Reaction[]
+  bookmark Bookmark[]
+  like     Like[]
 }
 
 model Category {
@@ -74,71 +75,71 @@ model Comment {
 }
 
 model Platform {
-  id              Int             @id @default(autoincrement())
-  platform_name   PLATFORM_NAME
-  create_at       DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
+  id            Int           @id @default(autoincrement())
+  platform_name PLATFORM_NAME
+  create_at     DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
 
-  sosmed_account  Sosmed_account[]
+  sosmed_account Sosmed_account[]
 }
 
 model Sosmed_account {
-  id            Int       @id @default(autoincrement())
-  user_id       Int       @unique
-  platform_id   Int       
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  id          Int      @id @default(autoincrement())
+  user_id     Int      @unique
+  platform_id Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 
-  user          Users     @relation(fields: [user_id], references: [id])
-  platform      Platform  @relation(fields: [platform_id], references: [id])
+  user     Users    @relation(fields: [user_id], references: [id])
+  platform Platform @relation(fields: [platform_id], references: [id])
 }
 
 model Avatar {
-  id          Int       @id @default(autoincrement())
-  image_link  String
-  user_id     Int       @unique
-  create_at   DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
+  id         Int      @id @default(autoincrement())
+  image_link String
+  user_id    Int      @unique
+  create_at  DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  user        Users     @relation(fields: [user_id], references: [id])
+  user Users @relation(fields: [user_id], references: [id])
 }
 
 model Reaction {
-  id              Int             @id @default(autoincrement())
-  user_id         Int
-  story_id        Int
-  reaction_type   REACTION_TYPE
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
+  id            Int           @id @default(autoincrement())
+  user_id       Int
+  story_id      Int
+  reaction_type REACTION_TYPE
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
 
-  user            Users           @relation(fields: [user_id], references: [id])
-  story           Story           @relation(fields: [story_id], references: [id])
+  user  Users @relation(fields: [user_id], references: [id])
+  story Story @relation(fields: [story_id], references: [id])
 
   @@unique([user_id, story_id])
 }
 
 model Bookmark {
-  id              Int             @id @default(autoincrement())
-  user_id         Int
-  story_id        Int
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  story_id   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  user            Users           @relation(fields: [user_id], references: [id])
-  story           Story           @relation(fields: [story_id], references: [id])
+  user  Users @relation(fields: [user_id], references: [id])
+  story Story @relation(fields: [story_id], references: [id])
 
   @@unique([user_id, story_id])
 }
 
 model Like {
-  id              Int             @id @default(autoincrement())
-  user_id         Int
-  story_id        Int
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  story_id   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  user            Users           @relation(fields: [user_id], references: [id])
-  story           Story           @relation(fields: [story_id], references: [id])
+  user  Users @relation(fields: [user_id], references: [id])
+  story Story @relation(fields: [story_id], references: [id])
 
   @@unique([user_id, story_id])
 }
@@ -159,7 +160,7 @@ enum Category_name {
   hiburan
 }
 
-enum  REACTION_TYPE {
+enum REACTION_TYPE {
   like
   love
   haha
@@ -167,4 +168,3 @@ enum  REACTION_TYPE {
   sad
   angry
 }
-

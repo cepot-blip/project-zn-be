@@ -1,23 +1,12 @@
 import { request, response } from "express";
-import env from "dotenv";
-import { CategoryModels } from "../../../models/Models";
-
-env.config();
+import categoryService from "../../../lib/services/Category";
 
 export const getCategories = async (req = request, res = response) => {
-  try {
-    const result = await CategoryModels.findMany({
-      orderBy : {id : "desc"}
-    });
+  const result = await categoryService.getCategories();
 
-    return res.status(200).json({
-      status: true,
-      query: result,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: false,
-      message: error.message,
-    });
-  }
+  return res.status(200).json({
+    status: true,
+    message: "Get category successfully",
+    query: result,
+  });
 };
