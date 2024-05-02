@@ -29,14 +29,7 @@ app.use((req, res, next) => {
 
 app.set("trust proxy", false);
 
-app.use(
-  cors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 201,
-  })
-);
+app.use(cors());
 
 app.use(
   helmet({
@@ -50,6 +43,14 @@ app.use(express.urlencoded({ extended: false }));
 
 // ROUTES
 router(app);
+
+// 404 NOT FOUND
+app.get("*", (req, res) => {
+  res.status(404).json({
+    status: false,
+    message: "Halaman tidak ditemukan",
+  });
+});
 
 // HANDLE ERRORS
 app.use((error, req, res, next) => {

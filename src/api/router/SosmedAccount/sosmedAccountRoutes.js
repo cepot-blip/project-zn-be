@@ -10,27 +10,27 @@ import deleteSosmedAccountById from "../../controllers/SosmedAccount/deleteSosme
 const sosmed_account_routes = express.Router();
 
 sosmed_account_routes.post(
-  "/sosmed-account",
+  "/sosmed-accounts",
   authCheck,
   catchAsync(createSosmedAccount)
 );
 sosmed_account_routes.get(
-  "/sosmed-account",
+  "/sosmed-accounts",
   authCheck,
   catchAsync(getSosmedAccounts)
 );
 sosmed_account_routes.get(
-  "/sosmed-account/:id",
+  "/sosmed-accounts/:id",
   authCheck,
   catchAsync(getSosmedAccountById)
 );
 sosmed_account_routes.put(
-  "/sosmed-account/:id",
+  "/sosmed-accounts/:id",
   authCheck,
   catchAsync(updateSosmedAccountById)
 );
 sosmed_account_routes.delete(
-  "/sosmed-account/:id",
+  "/sosmed-accounts/:id",
   authCheck,
   catchAsync(deleteSosmedAccountById)
 );

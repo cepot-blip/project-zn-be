@@ -9,10 +9,10 @@ import deleteAvatarById from "../../controllers/Avatar/deleteAvatarById";
 
 const avatar_routes = express.Router();
 
-avatar_routes.post("/avatar", authCheck, catchAsync(createAvatar));
-avatar_routes.get("/avatar", authCheck, catchAsync(getAvatars));
-avatar_routes.get("/avatar/:id", authCheck, catchAsync(getAvatarById));
-avatar_routes.put("/avatar/:id", authCheck, catchAsync(updateAvatarById));
-avatar_routes.delete("/avatar/:id", authCheck, catchAsync(deleteAvatarById));
+avatar_routes.post("/avatars", authCheck, catchAsync(createAvatar));
+avatar_routes.get("/avatars", authCheck, catchAsync(getAvatars));
+avatar_routes.get("/avatars/:id", authCheck, catchAsync(getAvatarById));
+avatar_routes.put("/avatars/:id", authCheck, catchAsync(updateAvatarById));
+avatar_routes.delete("/avatars/:id", authCheck, catchAsync(deleteAvatarById));
 
 export default avatar_routes;

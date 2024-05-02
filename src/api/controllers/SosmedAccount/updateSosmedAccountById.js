@@ -2,10 +2,13 @@ import { request, response } from "express";
 import sosmedAccountService from "../../../lib/services/SosmedAccount";
 import NotFoundError from "../../../utils/exceptions/NotFoundError";
 import platformService from "../../../lib/services/Platform";
+import SosmedAccountValidation from "../../../validation/SosmedAccount";
 
 const updateSosmedAccountById = async (req = request, res = response) => {
   const { id } = req.params;
   const { platform_id } = req.body;
+
+  SosmedAccountValidation.validatePayloadSosmedAccount({ platform_id });
 
   const sosmedAccount = await sosmedAccountService.getSosmedAccountById(
     Number(id)
