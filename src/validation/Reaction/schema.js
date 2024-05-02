@@ -4,7 +4,10 @@ import Joi from "joi";
 const payloadSchema = Joi.object({
   reaction_type: Joi.string()
     .valid(...Object.values(REACTION_TYPE))
-    .required(),
+    .required()
+    .messages({
+      "any.required": "reaction_type is required",
+    }),
 });
 
 export { payloadSchema };
