@@ -1,7 +1,5 @@
 import { request, response } from "express";
 import NotFoundError from "../../../utils/exceptions/NotFoundError";
-import { avatarModel } from "../../../models/Models";
-import InvariantError from "../../../utils/exceptions/InvariantError";
 import avatarService from "../../../lib/services/Avatar";
 import AvatarValidation from "../../../validation/Avatar";
 
