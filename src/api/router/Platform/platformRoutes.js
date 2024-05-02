@@ -6,7 +6,7 @@ import { authCheck } from "../../middlewares/authGuard";
 
 const platform_routes = express.Router();
 
-platform_routes.get("/platform", authCheck, catchAsync(getPlatforms));
-platform_routes.get("/platform/:id", authCheck, catchAsync(getPlatformById));
+platform_routes.get("/platforms", authCheck, catchAsync(getPlatforms));
+platform_routes.get("/platforms/:id", authCheck, catchAsync(getPlatformById));
 
 export default platform_routes;
