@@ -7,7 +7,7 @@ import StoryValidation from "../../../validation/Story";
 
 export const createStory = async (req = request, res = response) => {
   try {
-    const { title, content, like_count, category_id } = await req.body;
+    const { title, content, like_count = 0, category_id } = await req.body;
     StoryValidation.validatePayloadStory({
       title,
       content,
