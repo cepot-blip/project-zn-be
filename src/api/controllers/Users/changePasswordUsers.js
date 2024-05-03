@@ -1,52 +1,35 @@
-import { request, response } from "express"
-import bcrypt from "bcryptjs"
-import { UsersModels } from "../../../models/Models";
+import { request, response } from "express";
+import bcrypt from "bcryptjs";
+import userService from "../../../lib/services/User";
+import NotFoundError from "../../../utils/exceptions/NotFoundError";
+import ClientError from "../../../utils/exceptions/ClientError";
+import UserValidation from "../../../validation/User";
 
-const salt = bcrypt.genSaltSync(10)
+const salt = bcrypt.genSaltSync(10);
 
 export const changePasswordUsers = async (req = request, res = response) => {
-	try {
-		const { oldPassword, newPassword, email } = req.body
-		const findUsers = await UsersModels.findUnique({
-			where: {
-				email: email,
-			},
-		})
+  const { email, oldPassword, newPassword } = req.body;
+  UserValidation.validateChangePassword({ email, oldPassword, newPassword });
 
-		if (!findUsers) {
-            return res.status(401).json({
-				success: false,
-				msg: "Email Not Found!",
-			})
+  const findUsers = await userService.getUserbyEmail(email);
 
-		}
+  if (!findUsers) {
+    throw new NotFoundError("Email Not Found!");
+  }
 
-		const compareOldPassword = await bcrypt.compareSync(oldPassword, findUsers.password)
-		if (!compareOldPassword) {
-			return res.status(401).json({
-				success: false,
-				msg: "Incorrect old password",
-			})
-		}
+  const compareOldPassword = await bcrypt.compareSync(
+    oldPassword,
+    findUsers.password
+  );
+  if (!compareOldPassword) {
+    throw new ClientError("Incorrect old password");
+  }
 
-		const hashNewPassword = await bcrypt.hashSync(newPassword, salt)
-		await UsersModels.update({
-			where: {
-				email: email,
-			},
-			data: {
-				password: hashNewPassword,
-			},
-		})
+  const hashNewPassword = await bcrypt.hashSync(newPassword, salt);
+  await userService.changePassword(email, hashNewPassword);
 
-		res.status(200).json({
-			success: true,
-			msg: "Successfully changed password!",
-		})
-	} catch (error) {
-		res.status(500).json({
-			success: false,
-			error: error.message,
-		})
-	}
-}
+  res.status(200).json({
+    success: true,
+    msg: "Successfully changed password!",
+  });
+};

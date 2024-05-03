@@ -1,13 +1,14 @@
 import { request, response } from "express";
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
-import env from 'dotenv'
-import { UsersModels } from "../../../models/Models";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import env from "dotenv";
+import UserValidation from "../../../validation/User";
+import userService from "../../../lib/services/User";
+import InvariantError from "../../../utils/exceptions/InvariantError";
 
-env.config()
+env.config();
 
-const salt = bcrypt.genSaltSync(10)
-
+const salt = bcrypt.genSaltSync(10);
 
 /**
  * @function createUsers ini digunakan untuk membuat user baru
@@ -15,60 +16,55 @@ const salt = bcrypt.genSaltSync(10)
  * @param res ini adalah response dari server
  * @function checkUniqueEmail ini digunakan untuk mengecek apakah email yang diinput sudah ada atau belum
  * @returns mengembalikan data yang baru saja dibuat
- * 
+ *
  * @author Mprooy
  */
 
-
 export const createUsers = async (req = request, res = response) => {
-    try {
-        const {
-            username,
-            email,
-            password,
-        } = await req.body; 
+  const {
+    username,
+    email,
+    password,
+    fullName,
+    profilePicture = undefined,
+  } = await req.body;
 
-        // VALIDASI EMAIL
-        const checkUniqueEmail = UsersModels.findUnique({
-            where : {
-                email : email
-            }
-        });
+  UserValidation.validatePayloadUser({
+    username,
+    email,
+    password,
+    fullName,
+    profilePicture,
+  });
 
-        if (!checkUniqueEmail) {
-            return res.status(401).json({
-                status: false,
-                message: "Email already exists!"
-            });
-        }
+  // VALIDASI EMAIL
+  const checkUniqueEmail = await userService.getUserbyEmail(email);
 
-        const createUsers = await UsersModels.create({
-            data: {
-                email: email,
-                password: bcrypt.hashSync(password, salt),
-                username : username
-            }
-        });
+  if (checkUniqueEmail) {
+    throw new InvariantError("Email already existed");
+  }
 
-        const token = jwt.sign(
-            {
-                app_name: process.env.APP_NAME,
-                id: createUsers.id,
-                email: createUsers.email,
-                username : username
-            },
-            process.env.API_SECRET
-        );
+  const createUsers = await userService.createUser(
+    username,
+    email,
+    bcrypt.hashSync(password, salt),
+    fullName,
+    profilePicture
+  );
 
-        res.status(201).json({
-            success: true,
-            msg: "Successfully created users!",
-            token: token
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
-    }
+  const token = jwt.sign(
+    {
+      app_name: process.env.APP_NAME,
+      id: createUsers.id,
+      email: createUsers.email,
+      username: username,
+    },
+    process.env.API_SECRET
+  );
+
+  res.status(201).json({
+    success: true,
+    msg: "Successfully created users!",
+    token: token,
+  });
 };

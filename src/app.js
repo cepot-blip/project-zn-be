@@ -62,7 +62,7 @@ app.use((error, req, res, next) => {
   }
   return res.status(500).json({
     status: false,
-    message: "Maaf, terjadi kesalahan pada server kami",
+    message: error.message,
   });
 });
 
