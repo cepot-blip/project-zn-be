@@ -154,6 +154,7 @@ model Message {
   sender_user_id    Int
   receiver_user_id  Int
   message_content   String   @db.Text
+  status            Boolean  @default(false)
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   
@@ -166,7 +167,7 @@ model Notification {
   user_id             Int
   notificationContent String    @db.Text
   notificationDate    DateTime
-  status              Boolean
+  status              Boolean   @default(false)
   created_at          DateTime  @default(now())
   updated_at          DateTime  @updatedAt
 
