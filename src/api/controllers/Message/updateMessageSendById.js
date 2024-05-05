@@ -6,7 +6,7 @@ import AuthorizationError from "../../../utils/exceptions/AuthorizationError";
 import MessageValidation from "../../../validation/Message";
 import userService from "../../../lib/services/User";
 
-const updateMessageById = async (req = request, res = response) => {
+const updateMessageSendById = async (req = request, res = response) => {
   const { id } = req.params;
   MessageValidation.validatePayloadPutMessage(req.body);
 
@@ -28,10 +28,9 @@ const updateMessageById = async (req = request, res = response) => {
     throw new NotFoundError("User not found, put valid id");
   }
 
-  const verifyOwnerMessage = await messageService.verifyOwnerMessage({
+  const verifyOwnerMessage = await messageService.verifyOwnerMessageSend({
     id: Number(id),
     sender_user_id,
-    receiver_user_id: message.receiver_user_id,
   });
 
   if (!verifyOwnerMessage) {
@@ -45,4 +44,4 @@ const updateMessageById = async (req = request, res = response) => {
   });
 };
 
-export default updateMessageById;
+export default updateMessageSendById;

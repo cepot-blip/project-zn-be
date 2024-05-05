@@ -2,14 +2,16 @@ import { request, response } from "express";
 import tokenize from "../../../utils/tokenize";
 import messageService from "../../../lib/services/Message";
 
-const getMessages = async (req = request, res = response) => {
+const getMessagesByReceiver = async (req = request, res = response) => {
   const { page = 1, limit: take = 10 } = await req.query;
   const skip = (page - 1) * take;
 
   const token = req.headers["authorization"];
   const { id: user_id } = await tokenize.decodeJWT(token);
 
-  const totalMessage = await messageService.getTotalMessageByUserId(user_id);
+  const totalMessage = await messageService.getTotalMessageReceiveByUserId(
+    user_id
+  );
 
   const totalPage = Math.ceil(totalMessage / take);
 
@@ -21,11 +23,11 @@ const getMessages = async (req = request, res = response) => {
     skip: Number(skip),
     take: Number(take),
   };
-  const messages = await messageService.getMessageByUserId(params);
+  const messages = await messageService.getMessageReceiveByUserId(params);
 
   return res.status(200).json({
     success: true,
-    message: "Get messages successfully",
+    message: "Get messages by receiver successfully",
     data: messages,
     pagination: {
       total_page: totalPage,
@@ -37,4 +39,4 @@ const getMessages = async (req = request, res = response) => {
   });
 };
 
-export default getMessages;
+export default getMessagesByReceiver;

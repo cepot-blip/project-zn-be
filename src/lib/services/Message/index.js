@@ -7,11 +7,19 @@ class MessageService {
     this.#messageModel = messageModel;
   }
 
-  async verifyOwnerMessage({ id, sender_user_id, receiver_user_id }) {
+  async verifyOwnerMessageSend({ id, sender_user_id }) {
     return await this.#messageModel.findUnique({
       where: {
         id,
         sender_user_id,
+      },
+    });
+  }
+
+  async verifyOwnerMessageReceive({ id, receiver_user_id }) {
+    return await this.#messageModel.findUnique({
+      where: {
+        id,
         receiver_user_id,
       },
     });
@@ -25,7 +33,7 @@ class MessageService {
     return await this.#messageModel.findUnique({ where: { id } });
   }
 
-  async getMessageByUserId({ user_id, skip, take }) {
+  async getMessageSendByUserId({ user_id, skip, take }) {
     return await this.#messageModel.findMany({
       where: {
         sender_user_id: user_id,
@@ -36,10 +44,29 @@ class MessageService {
     });
   }
 
-  async getTotalMessageByUserId(user_id) {
+  async getMessageReceiveByUserId({ user_id, skip, take }) {
+    return await this.#messageModel.findMany({
+      where: {
+        receiver_user_id: user_id,
+      },
+      skip,
+      take,
+      orderBy: { updated_at: "desc" },
+    });
+  }
+
+  async getTotalMessageSendByUserId(user_id) {
     return await this.#messageModel.count({
       where: {
         sender_user_id: user_id,
+      },
+    });
+  }
+
+  async getTotalMessageReceiveByUserId(user_id) {
+    return await this.#messageModel.count({
+      where: {
+        receiver_user_id: user_id,
       },
     });
   }
@@ -50,6 +77,10 @@ class MessageService {
 
   async updateMessageById(id, data) {
     await this.#messageModel.update({ where: { id }, data });
+  }
+
+  async updateStatusMessageById(id, status) {
+    await this.#messageModel.update({ where: { id }, data: { status } });
   }
 }
 
