@@ -1,5 +1,5 @@
-import { request, response } from "express"
-import { UsersModels } from "../../../models/Models";
+import { request, response } from "express";
+import userService from "../../../lib/services/User";
 
 /**
  * @function getUsers ini digunakan untuk menampilkan data user
@@ -11,55 +11,23 @@ import { UsersModels } from "../../../models/Models";
  * @function filter ini digunakan untuk menampung data filter agar bisa melakukan pencarian data berdasarkan id, username dan email
  * @function result result ini digunakan untuk menampung data hasil dari query
  * @function conn ini digunakan untuk menampung data hasil dari query
- * 
+ *
  * @author Mprooy
-*/
+ */
 
 export const getUsers = async (req = request, res = response) => {
-    try {
-        const { page = 1, limit = 10 } = await req.query
-		let skip = (page - 1) * limit
-		const { filter } = await req.body
-		const result = await UsersModels.findMany({
-            skip: parseInt(skip),
-			take: parseInt(limit),
-			orderBy: { id: "desc" },
-			where: filter,
-			include : {
-				story : {
-					select : {
-						id : true,
-						title : true,
-						content : true,
-						postedAt : true,
-						category_id : true,
-					}
-				},
-				comment : {
-					select : {
-						id : true,
-						story_id : true,
-						content : true,
-						commentAt : true
-					}
-				}
-			}
-        })
-		
-        const conn = await UsersModels.count()
+  const { page = 1, limit = 10 } = await req.query;
+  let skip = (page - 1) * limit;
+  const { filter } = await req.body;
+  const result = await userService.getUsers(skip, limit, filter);
 
-		res.status(200).json({
-			success: true,
-			current_page: parseInt(page),
-			total_page: Math.ceil(conn / limit),
-			total_data: conn,
-			query: result,
-		})
-        
-    } catch (error) {
-        res.status(500).json({
-            success : false,
-            error : error.message
-        })
-    }
-}
+  const conn = await userService.countTotalDataUser();
+
+  res.status(200).json({
+    success: true,
+    current_page: parseInt(page),
+    total_page: Math.ceil(conn / limit),
+    total_data: conn,
+    query: result,
+  });
+};

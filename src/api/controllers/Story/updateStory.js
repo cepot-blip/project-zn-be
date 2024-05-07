@@ -1,75 +1,47 @@
 import { request, response } from "express";
-import env from "dotenv";
-import { JWTValue } from "../../middlewares/getTokenValue";
-import {
-  StoryModels,
-  UsersModels,
-  CategoryModels,
-} from "../../../models/Models";
-
-env.config();
+import tokenize from "../../../utils/tokenize";
+import storyService from "../../../lib/services/Story";
+import categoryService from "../../../lib/services/Category";
+import NotFoundError from "../../../utils/exceptions/NotFoundError";
+import AuthorizationError from "../../../utils/exceptions/AuthorizationError";
+import StoryValidation from "../../../validation/Story";
 
 export const updateStory = async (req = request, res = response) => {
-  try {
-    const { id } = req.params;
-    const { title, content, category_id } = req.body;
+  const { id } = req.params;
+  const { title, content, category_id } = req.body;
+  StoryValidation.validatePayloadStory({
+    title,
+    content,
+    category_id,
+  });
 
-    const userJWTTokenValue = await JWTValue(req, res);
-    const user_id = userJWTTokenValue.id;
+  const jwtToken = req.headers.authorization;
+  const { user_id } = await tokenize.decodeJWT(jwtToken);
 
-    const checkStoryId = await StoryModels.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-    });
-
-    if (!checkStoryId) {
-      return res.status(400).json({
-        status: false,
-        message: "Story does't existed",
-      });
-    }
-
-    if (checkStoryId.user_id !== parseInt(user_id)) {
-      return res.status(403).json({
-        status: false,
-        message: "User not authorized",
-      });
-    }
-
-    const checkCategoryId = await CategoryModels.findUnique({
-      where: {
-        id: parseInt(category_id),
-      },
-    });
-
-    if (!checkCategoryId) {
-      return res.status(400).json({
-        status: false,
-        message: "Category doesn't existed",
-      });
-    }
-
-    await StoryModels.update({
-      where: {
-        id: parseInt(id),
-      },
-      data: {
-        user_id: checkStoryId.user_id,
-        title: title,
-        content: content,
-        category_id: parseInt(category_id),
-      },
-    });
-
-    return res.status(200).json({
-      status: true,
-      message: "Successfully updated story",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: false,
-      message: error.message,
-    });
+  const checkStorybyId = await storyService.getStoryById(parseInt(id));
+  if (!checkStorybyId) {
+    throw new NotFoundError("Story not found, put valid id");
   }
+
+  const verifyStorybyUserId = await storyService.checkAvailabilityStoryByUserId(
+    parseInt(id),
+    user_id
+  );
+  if (!verifyStorybyUserId)
+    throw new AuthorizationError("User not authorized to access");
+
+  const checkCategory = await categoryService.getCategoryById(
+    parseInt(category_id)
+  );
+  if (!checkCategory) {
+    throw new NotFoundError("Category not found, put valid id");
+  }
+
+  const data = { user_id, title, content, category_id };
+  await storyService.updateStory(parseInt(id), data);
+
+  return res.status(200).json({
+    status: true,
+    message: "Successfully updated story",
+  });
 };

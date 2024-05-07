@@ -1,47 +1,29 @@
 import { request, response } from "express";
-import env from "dotenv";
-import { JWTValue } from "../../middlewares/getTokenValue";
-import { StoryModels, UsersModels } from "../../../models/Models";
-
-env.config();
+import storyService from "../../../lib/services/Story";
 
 export const getStories = async (req = request, res = response) => {
-  try {
-    const userJWTTokenValue = await JWTValue(req, res);
-    const user_id = userJWTTokenValue.id;
+  const { page = 1, limit = 10 } = await req.query;
+  let offset = (page - 1) * limit;
 
-    const checkUserId = await UsersModels.findUnique({
-      where: {
-        id: parseInt(user_id),
-      },
-    });
+  const totalCountStory = await storyService.totalStoryData();
 
-    if (!checkUserId) {
-      return res.status(400).json({
-        status: false,
-        message: "User doesn't existed ",
-      });
-    }
+  const totalPages = Math.ceil(totalCountStory / limit);
 
-    const result = await StoryModels.findMany({
-      orderBy : {id : "desc"},
-      include: {
-        category: {
-          select: {
-            category_name: true,
-          },
-        },
-      },
-    });
+  const next = offset + limit < totalCountStory;
+  const prev = offset > 0;
 
-    return res.status(200).json({
-      status: true,
-      query: result,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: false,
-      message: error.message,
-    });
-  }
+  const result = await storyService.getStory(offset, limit);
+
+  return res.status(200).json({
+    status: true,
+    message: "Get story successfully",
+    pagination: {
+      total_pages: totalPages,
+      limit: parseInt(limit),
+      current_page: parseInt(page),
+      next: next,
+      prev: prev,
+    },
+    query: result,
+  });
 };

@@ -1,51 +1,34 @@
 import { request, response } from "express";
-import env from "dotenv";
-import { JWTValue } from "../../middlewares/getTokenValue";
-import { CommentModels } from "../../../models/Models";
-
-env.config();
+import tokenize from "../../../utils/tokenize";
+import commentService from "../../../lib/services/Comment";
+import NotFoundError from "../../../utils/exceptions/NotFoundError";
+import AuthorizationError from "../../../utils/exceptions/AuthorizationError";
 
 export const deleteComments = async (req = request, res = response) => {
-  try {
-    const { id } = req.params;
+  const { storyId: story_id, id } = req.params;
 
-    const userJWTTokenValue = await JWTValue(req, res);
-    const user_id = userJWTTokenValue.id;
+  const jwtToken = req.headers.authorization;
+  const { id: user_id } = await tokenize.decodeJWT(jwtToken);
 
-    const checkCommentId = await CommentModels.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-    });
-
-    if (!checkCommentId) {
-      return res.status(400).json({
-        status: false,
-        message: "Comment does't existed",
-      });
-    }
-
-    if (checkCommentId.user_id !== parseInt(user_id)) {
-      return res.status(403).json({
-        status: false,
-        message: "User not authorized",
-      });
-    }
-
-    await CommentModels.delete({
-      where: {
-        id: parseInt(checkCommentId.id),
-      },
-    });
-
-    return res.status(200).json({
-      status: true,
-      message: "Successfully delete comment",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: false,
-      message: error.message,
-    });
+  const checkCommentId = await commentService.getCommentById(parseInt(id));
+  if (!checkCommentId) {
+    throw new NotFoundError("Comment not found, put valid id");
   }
+
+  const verifyCommentbyUserId =
+    await commentService.checkAvailabilityCommentByUserId(
+      parseInt(id),
+      parseInt(user_id),
+      parseInt(story_id)
+    );
+  if (!verifyCommentbyUserId) {
+    throw new AuthorizationError("User not authorized to access");
+  }
+
+  await commentService.deleteComment(parseInt(id), parseInt(story_id));
+
+  return res.status(200).json({
+    status: true,
+    message: "Successfully delete comment",
+  });
 };

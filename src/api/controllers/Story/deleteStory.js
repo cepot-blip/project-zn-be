@@ -1,51 +1,33 @@
 import { request, response } from "express";
-import env from "dotenv";
+import storyService from "../../../lib/services/Story";
+import tokenize from "../../../utils/tokenize";
+import NotFoundError from "../../../utils/exceptions/NotFoundError";
+import AuthorizationError from "../../../utils/exceptions/AuthorizationError";
 import { StoryModels } from "../../../models/Models";
-import { JWTValue } from "../../middlewares/getTokenValue";
-
-env.config();
 
 export const deleteStory = async (req = request, res = response) => {
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const userJWTTokenValue = await JWTValue(req, res);
-    const user_id = userJWTTokenValue.id;
+  const jwtToken = req.headers.authorization;
+  const { id: user_id } = await tokenize.decodeJWT(jwtToken);
 
-    const checkStoryId = await StoryModels.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-    });
-
-    if (!checkStoryId) {
-      return res.status(400).json({
-        status: false,
-        message: "Story does't existed",
-      });
-    }
-
-    if (checkStoryId.user_id !== parseInt(user_id)) {
-      return res.status(403).json({
-        status: false,
-        message: "User not authorized",
-      });
-    }
-
-    await StoryModels.delete({
-      where: {
-        id: parseInt(id),
-      },
-    });
-
-    return res.status(200).json({
-      status: true,
-      message: "Successfully delete story",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: false,
-      message: error.message,
-    });
+  const checkStorybyId = await storyService.getStoryById(parseInt(id));
+  if (!checkStorybyId) {
+    throw new NotFoundError("Story not found, put valid id");
   }
+
+  const verifyStorybyUserId = await storyService.checkAvailabilityStoryByUserId(
+    parseInt(id),
+    user_id
+  );
+  if (!verifyStorybyUserId) {
+    throw new AuthorizationError("User not authorized to access");
+  }
+
+  await storyService.deleteStory(parseInt(id));
+
+  return res.status(200).json({
+    status: true,
+    message: "Successfully delete story",
+  });
 };
