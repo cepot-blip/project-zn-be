@@ -31,6 +31,9 @@ model Users {
   reaction       Reaction[]
   bookmark       Bookmark[]
   like           Like[]
+  send_messages     Message[]  @relation("sender")
+  received_messages Message[]  @relation("receiver")
+  notification      Notification[]
 }
 
 model Story {
@@ -144,6 +147,31 @@ model Like {
   story Story @relation(fields: [story_id], references: [id])
 
   @@unique([user_id, story_id])
+}
+
+model Message {
+  id                Int     @id @default(autoincrement())
+  sender_user_id    Int
+  receiver_user_id  Int
+  message_content   String   @db.Text
+  status            Boolean  @default(false)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  
+  sender            Users    @relation("sender",fields: [sender_user_id], references: [id])
+  receiver          Users    @relation("receiver",fields: [receiver_user_id], references: [id])
+}
+
+model Notification {
+  id                  Int       @id @default(autoincrement())
+  user_id             Int
+  notificationContent String    @db.Text
+  notificationDate    DateTime
+  status              Boolean   @default(false)
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+
+  user                Users   @relation(fields: [user_id], references: [id])
 }
 
 enum PLATFORM_NAME {

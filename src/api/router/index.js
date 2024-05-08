@@ -1,6 +1,8 @@
 import avatar_routes from "./Avatar/avatarRoutes";
+import bookmark_routes from "./Bookmark/bookmarkroutes";
 import category_routes from "./Category/categoryRoutes";
 import comments_routes from "./Comments/commentsRoutes";
+import message_routes from "./Message/messageRoutes";
 import platform_routes from "./Platform/platformRoutes";
 import reaction_routes from "./Reaction/ReactionRoutes";
 import sosmed_account_routes from "./SosmedAccount/sosmedAccountRoutes";
@@ -16,6 +18,8 @@ const routes = [
   category_routes,
   comments_routes,
   reaction_routes,
+  bookmark_routes,
+  message_routes,
 ];
 
 const router = (app) => {
