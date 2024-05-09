@@ -13,7 +13,7 @@ const createSosmedAccount = async (req = request, res = response) => {
   const platform = await platformService.getPlatformById(Number(platform_id));
 
   if (!platform) {
-    throw NotFoundError("Platform not found, put valid id");
+    throw new NotFoundError("Platform not found, put valid id");
   }
 
   const token = await req.headers["authorization"];
