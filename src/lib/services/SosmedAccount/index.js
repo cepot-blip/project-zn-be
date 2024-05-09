@@ -29,6 +29,12 @@ class SosmedAccountService {
   async deleteSosmedAccountById(id) {
     await this.#sosmedAccountModel.delete({ where: { id } });
   }
+
+  async checkOwnerSosmedAccount(id, user_id) {
+    return await this.#sosmedAccountModel.findUnique({
+      where: { id, user_id },
+    });
+  }
 }
 
 const sosmedAccountService = new SosmedAccountService(sosmedAccountModel);
