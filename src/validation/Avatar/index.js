@@ -1,9 +1,13 @@
 import InvariantError from "../../utils/exceptions/InvariantError";
-import { payloadSchema } from "./schema";
+import { payloadPostSchema, payloadPutSchema } from "./schema";
 
 const AvatarValidation = {
-  validatePayloadAvatar(payload) {
-    const { error } = payloadSchema.validate(payload);
+  validatePayloadPostAvatar(payload) {
+    const { error } = payloadPostSchema.validate(payload);
+    if (error) throw new InvariantError(error.message);
+  },
+  validatePayloadPutAvatar(payload) {
+    const { error } = payloadPutSchema.validate(payload);
     if (error) throw new InvariantError(error.message);
   },
 };
