@@ -26,7 +26,7 @@ const getMessagesBySender = async (req = request, res = response) => {
   const messages = await messageService.getMessageSendByUserId(params);
 
   return res.status(200).json({
-    success: true,
+    status: true,
     message: "Get messages by sender successfully",
     data: messages,
     pagination: {
