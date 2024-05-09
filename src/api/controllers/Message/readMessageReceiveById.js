@@ -1,6 +1,7 @@
 import { request, response } from "express";
 import messageService from "../../../lib/services/Message";
 import tokenize from "../../../utils/tokenize";
+import AuthorizationError from "../../../utils/exceptions/AuthorizationError";
 
 const readOrUnreadMessageReceiveById = async (
   req = request,
