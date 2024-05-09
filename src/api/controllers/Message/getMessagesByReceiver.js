@@ -26,7 +26,7 @@ const getMessagesByReceiver = async (req = request, res = response) => {
   const messages = await messageService.getMessageReceiveByUserId(params);
 
   return res.status(200).json({
-    success: true,
+    status: true,
     message: "Get messages by receiver successfully",
     data: messages,
     pagination: {
