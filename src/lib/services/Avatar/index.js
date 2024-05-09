@@ -30,6 +30,10 @@ class AvatarService {
   async deleteAvatarById(id) {
     await this.#avatarModel.delete({ where: { id } });
   }
+
+  async checkOwnerAvatar(id, user_id) {
+    return await this.#avatarModel.findUnique({ where: { id, user_id } });
+  }
 }
 
 const avatarService = new AvatarService(avatarModel);
