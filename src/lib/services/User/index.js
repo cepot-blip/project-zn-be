@@ -12,7 +12,7 @@ class UserService {
       skip: skip,
       take: limit,
       orderBy: { id: "desc" },
-      where: { filter },
+      where: filter,
       include: {
         story: {
           select: {
