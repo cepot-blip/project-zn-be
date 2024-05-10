@@ -10,7 +10,7 @@ const createUserSchema = Joi.object({
     .min(8)
     .required(),
   fullName: Joi.string().required(),
-  profilePicture: Joi.string().optional(),
+  profilePicture: Joi.string().allow("", null).optional(),
 });
 
 const loginUserSchema = Joi.object({
@@ -30,7 +30,7 @@ const updateUserSchema = Joi.object({
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
     .required(),
   fullName: Joi.string().required(),
-  profilePicture: Joi.string().optional(),
+  profilePicture: Joi.string().allow("", null).optional(),
 });
 
 const changePasswordSchema = Joi.object({
