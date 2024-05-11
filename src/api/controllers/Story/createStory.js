@@ -7,10 +7,17 @@ import StoryValidation from "../../../validation/Story";
 
 export const createStory = async (req = request, res = response) => {
   try {
-    const { title, content, like_count = 0, category_id } = await req.body;
-    StoryValidation.validatePayloadStory({
+    const {
       title,
       content,
+      image_link = null,
+      like_count = 0,
+      category_id,
+    } = await req.body;
+    StoryValidation.validatePayloadPostStory({
+      title,
+      content,
+      image_link,
       like_count,
       category_id,
     });
@@ -29,6 +36,7 @@ export const createStory = async (req = request, res = response) => {
       user_id,
       title,
       content,
+      image_link,
       like_count,
       category_id,
     };

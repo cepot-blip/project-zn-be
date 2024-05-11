@@ -24,16 +24,19 @@ model Users {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sosmed_account Sosmed_account?
-  avatar         Avatar?
-  story          Story[]
-  comment        Comment[]
-  reaction       Reaction[]
-  bookmark       Bookmark[]
-  like           Like[]
-  send_messages     Message[]  @relation("sender")
-  received_messages Message[]  @relation("receiver")
+  sosmed_account    Sosmed_account?
+  avatar            Avatar?
+  story             Story[]
+  comment           Comment[]
+  reaction          Reaction[]
+  bookmark          Bookmark[]
+  like              Like[]
+  send_messages     Message[]       @relation("sender")
+  received_messages Message[]       @relation("receiver")
   notification      Notification[]
+  reStory           ReStory[]
+  follower_user_id  Following[]     @relation("user_follower")
+  following_user_id Following[]     @relation("user_following")
 }
 
 model Story {
@@ -41,7 +44,7 @@ model Story {
   user_id     Int
   title       String
   content     String
-  postedAt    DateTime @updatedAt
+  image_link  String
   like_count  Int      @default(0)
   category_id Int
   created_at  DateTime @default(now())
@@ -54,11 +57,12 @@ model Story {
   reaction Reaction[]
   bookmark Bookmark[]
   like     Like[]
+  ReStory  ReStory[]
 }
 
 model Category {
   id            Int           @id @default(autoincrement())
-  category_name Category_name
+  category_name CATEGORY_NAME
   description   String
   created_at    DateTime      @default(now())
   updated_at    DateTime      @updatedAt
@@ -150,28 +154,72 @@ model Like {
 }
 
 model Message {
-  id                Int     @id @default(autoincrement())
-  sender_user_id    Int
-  receiver_user_id  Int
-  message_content   String   @db.Text
-  status            Boolean  @default(false)
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
-  
-  sender            Users    @relation("sender",fields: [sender_user_id], references: [id])
-  receiver          Users    @relation("receiver",fields: [receiver_user_id], references: [id])
+  id               Int      @id @default(autoincrement())
+  sender_user_id   Int
+  receiver_user_id Int
+  message_content  String   @db.Text
+  status           Boolean  @default(false)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  sender   Users @relation("sender", fields: [sender_user_id], references: [id])
+  receiver Users @relation("receiver", fields: [receiver_user_id], references: [id])
 }
 
 model Notification {
-  id                  Int       @id @default(autoincrement())
+  id                  Int      @id @default(autoincrement())
   user_id             Int
-  notificationContent String    @db.Text
+  notificationContent String   @db.Text
   notificationDate    DateTime
-  status              Boolean   @default(false)
-  created_at          DateTime  @default(now())
-  updated_at          DateTime  @updatedAt
+  status              Boolean  @default(false)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
 
-  user                Users   @relation(fields: [user_id], references: [id])
+  user Users @relation(fields: [user_id], references: [id])
+}
+
+model ReStory {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  story_id  Int
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  user  Users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  story Story @relation(fields: [story_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, story_id])
+}
+
+model Tag {
+  id         Int      @id @default(autoincrement())
+  tag_name   TAG_NAME
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Story_tag Story_tag[]
+}
+
+model Story_tag {
+  id         Int      @id @default(autoincrement())
+  tag_id     Int      @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  tag Tag @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+}
+
+model Following {
+  id                Int      @id @default(autoincrement())
+  following_user_id Int
+  follower_user_id  Int
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  follower_user  Users @relation("user_follower", fields: [follower_user_id], references: [id], onDelete: Cascade)
+  following_user Users @relation("user_following", fields: [following_user_id], references: [id], onDelete: Cascade)
+
+  @@unique([follower_user_id, following_user_id])
 }
 
 enum PLATFORM_NAME {
@@ -181,7 +229,7 @@ enum PLATFORM_NAME {
   tiktok
 }
 
-enum Category_name {
+enum CATEGORY_NAME {
   berita
   teknologi
   olahraga
@@ -197,4 +245,12 @@ enum REACTION_TYPE {
   wow
   sad
   angry
+}
+
+enum TAG_NAME {
+  teknologi
+  kesehatan
+  travel
+  makanan
+  bisnis
 }

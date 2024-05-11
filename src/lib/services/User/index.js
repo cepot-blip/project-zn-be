@@ -60,6 +60,12 @@ class UserService {
     });
   }
 
+  async checkUserbyId(id) {
+    return await this.#userModel.findUnique({
+      where: { id: id },
+    });
+  }
+
   async getUserbyEmail(email) {
     return await this.#userModel.findUnique({ where: { email: email } });
   }

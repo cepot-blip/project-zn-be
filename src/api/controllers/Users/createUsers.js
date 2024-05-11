@@ -26,7 +26,7 @@ export const createUsers = async (req = request, res = response) => {
     email,
     password,
     fullName,
-    profilePicture = undefined,
+    profilePicture = null,
   } = await req.body;
 
   UserValidation.validatePayloadUser({

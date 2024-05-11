@@ -9,6 +9,11 @@ import reaction_routes from "./Reaction/ReactionRoutes";
 import sosmed_account_routes from "./SosmedAccount/sosmedAccountRoutes";
 import story_routes from "./Story/storyRoutes";
 import users_routes from "./Users/usersRoutes";
+import storyTag_routes from "./StoryTag/storyTagRoutes";
+import tag_routes from "./Tag/tagRoutes";
+import reStory_routes from "./ReStory/reStoryRoutes";
+import following_routes from "./Following/followingRoutes";
+import like_routes from "./Like/likeRoutes";
 
 const routes = [
   users_routes,
@@ -22,6 +27,11 @@ const routes = [
   bookmark_routes,
   message_routes,
   notification_routes,
+  storyTag_routes,
+  tag_routes,
+  reStory_routes,
+  following_routes,
+  like_routes,
 ];
 
 const router = (app) => {

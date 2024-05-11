@@ -16,12 +16,18 @@ import UserValidation from "../../../validation/User";
  */
 
 export const updateUsers = async (req = request, res = response) => {
-  const { id, email, username, fullName, profilePicture = "" } = await req.body;
+  const {
+    id,
+    username,
+    email,
+    fullName,
+    profilePicture = null,
+  } = await req.body;
 
   UserValidation.validateUpdateUser({
     id,
-    email,
     username,
+    email,
     fullName,
     profilePicture,
   });

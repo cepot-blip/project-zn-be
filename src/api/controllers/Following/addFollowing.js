@@ -4,7 +4,6 @@ import tokenize from "../../../utils/tokenize";
 import followingService from "../../../lib/services/Following";
 import userService from "../../../lib/services/User";
 import ClientError from "../../../utils/exceptions/ClientError";
-import { number } from "joi";
 import FollowingValidation from "../../../validation/Following";
 
 export const addFollowing = async (req = request, res = response) => {
@@ -18,7 +17,7 @@ export const addFollowing = async (req = request, res = response) => {
     follower_user_id,
   });
 
-  const checkUserId = await userService.getUserById(
+  const checkUserId = await userService.checkUserbyId(
     parseInt(following_user_id)
   );
   if (!checkUserId) {
