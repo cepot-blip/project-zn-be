@@ -8,10 +8,11 @@ import StoryValidation from "../../../validation/Story";
 
 export const updateStory = async (req = request, res = response) => {
   const { id } = req.params;
-  const { title, content, category_id } = req.body;
-  StoryValidation.validatePayloadStory({
+  const { title, content, image_link, category_id } = req.body;
+  StoryValidation.validatePayloadPutStory({
     title,
     content,
+    image_link,
     category_id,
   });
 
@@ -37,7 +38,7 @@ export const updateStory = async (req = request, res = response) => {
     throw new NotFoundError("Category not found, put valid id");
   }
 
-  const data = { user_id, title, content, category_id };
+  const data = { user_id, title, content, image_link, category_id };
   await storyService.updateStory(parseInt(id), data);
 
   return res.status(200).json({

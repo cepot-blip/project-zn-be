@@ -14,3 +14,9 @@ export const ReactionModel = new PrismaClient().reaction;
 export const BookmarkModel = new PrismaClient().bookmark;
 export const MessageModel = new PrismaClient().message;
 export const NotificationModel = new PrismaClient().notification;
+
+export const tagModels = new PrismaClient().tag;
+export const storyTagModels = new PrismaClient().story_tag;
+export const ReStoryModels = new PrismaClient().reStory;
+export const followingModels = new PrismaClient().following;
+export const likeModels = new PrismaClient().like;

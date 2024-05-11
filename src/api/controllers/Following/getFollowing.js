@@ -6,7 +6,7 @@ import userService from "../../../lib/services/User";
 export const getFollowing = async (req = request, res = response) => {
   const { userId: following_user_id } = req.params;
 
-  const checkUserId = await userService.getUserById(
+  const checkUserId = await userService.checkUserbyId(
     parseInt(following_user_id)
   );
   if (!checkUserId) {

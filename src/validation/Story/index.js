@@ -1,9 +1,13 @@
 import InvariantError from "../../utils/exceptions/InvariantError";
-import { payloadSchema } from "./schema";
+import { payloadPostSchema, payloadPutSchema } from "./schema";
 
 const StoryValidation = {
-  validatePayloadStory(payload) {
-    const { error } = payloadSchema.validate(payload);
+  validatePayloadPostStory(payload) {
+    const { error } = payloadPostSchema.validate(payload);
+    if (error) throw new InvariantError(error.message);
+  },
+  validatePayloadPutStory(payload) {
+    const { error } = payloadPutSchema.validate(payload);
     if (error) throw new InvariantError(error.message);
   },
 };

@@ -6,7 +6,9 @@ import NotFoundError from "../../../utils/exceptions/NotFoundError";
 export const getFollower = async (req = request, res = response) => {
   const { userId: follower_user_id } = req.params;
 
-  const checkUserId = await userService.getUserById(parseInt(follower_user_id));
+  const checkUserId = await userService.checkUserbyId(
+    parseInt(follower_user_id)
+  );
   if (!checkUserId) {
     throw new NotFoundError("User not found, put valid ID");
   }
