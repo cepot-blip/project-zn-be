@@ -16,7 +16,7 @@ import NotFoundError from "../../../utils/exceptions/NotFoundError";
 export const deleteUsers = async (req = request, res = response) => {
   try {
     const { id } = await req.params;
-    const checkUniqueId = await userService.getUserById(parseInt(id));
+    const checkUniqueId = await userService.checkUserbyId(parseInt(id));
 
     if (!checkUniqueId) {
       throw new NotFoundError("Id not found!");

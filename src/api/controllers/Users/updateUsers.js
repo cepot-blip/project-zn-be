@@ -32,7 +32,7 @@ export const updateUsers = async (req = request, res = response) => {
     profilePicture,
   });
 
-  const checkUniqueId = await userService.getUserById(parseInt(id));
+  const checkUniqueId = await userService.checkUserbyId(parseInt(id));
 
   if (!checkUniqueId) {
     throw new NotFoundError("Id not found!");
