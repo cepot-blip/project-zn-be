@@ -30,13 +30,23 @@ const salt = bcrypt.genSaltSync(10);
 
 export const loginUsers = async (req = request, res = response) => {
   try {
-    const { email, password } = await req.body;
-    UserValidation.validateLoginUser({ email, password });
+    const { email, phone_number, password } = req.body;
 
-    const usersCheck = await userService.getUserbyEmail(email);
+    const where = {};
+    if (email) {
+      UserValidation.validateLoginUser({ email, password });
+      where.email = email;
+    } else {
+      UserValidation.validateLoginUser({ phone_number, password });
+      where.phone_number = phone_number;
+    }
+
+    const usersCheck = await userService.getUserbyCredentials(where);
 
     if (!usersCheck) {
-      throw new NotFoundError("Email not found!");
+      throw new NotFoundError(
+        `${where.email ? "Email" : "Phone Number"} not found!`
+      );
     }
 
     const comparePassword = await bcrypt.compareSync(

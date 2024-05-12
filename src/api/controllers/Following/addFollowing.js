@@ -17,7 +17,7 @@ export const addFollowing = async (req = request, res = response) => {
     follower_user_id,
   });
 
-  const checkUserId = await userService.checkUserbyId(
+  const checkUserId = await userService.getUserById(
     parseInt(following_user_id)
   );
   if (!checkUserId) {

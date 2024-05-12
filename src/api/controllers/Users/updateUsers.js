@@ -20,6 +20,7 @@ export const updateUsers = async (req = request, res = response) => {
     id,
     username,
     email,
+    phone_number,
     fullName,
     profilePicture = null,
   } = await req.body;
@@ -28,11 +29,12 @@ export const updateUsers = async (req = request, res = response) => {
     id,
     username,
     email,
+    phone_number,
     fullName,
     profilePicture,
   });
 
-  const checkUniqueId = await userService.checkUserbyId(parseInt(id));
+  const checkUniqueId = await userService.getUserById(parseInt(id));
 
   if (!checkUniqueId) {
     throw new NotFoundError("Id not found!");
@@ -42,6 +44,7 @@ export const updateUsers = async (req = request, res = response) => {
     id,
     username,
     email,
+    phone_number,
     fullName,
     profilePicture
   );

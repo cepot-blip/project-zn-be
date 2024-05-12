@@ -24,6 +24,7 @@ export const createUsers = async (req = request, res = response) => {
   const {
     username,
     email,
+    phone_number,
     password,
     fullName,
     profilePicture = null,
@@ -32,21 +33,31 @@ export const createUsers = async (req = request, res = response) => {
   UserValidation.validatePayloadUser({
     username,
     email,
+    phone_number,
     password,
     fullName,
     profilePicture,
   });
 
   // VALIDASI EMAIL
-  const checkUniqueEmail = await userService.getUserbyEmail(email);
+  let where = { email: email };
+  const checkUniqueEmail = await userService.getUserbyCredentials(where);
 
   if (checkUniqueEmail) {
     throw new InvariantError("Email already existed");
   }
 
+  where = { phone_number: phone_number };
+  const checkUniquePhoneNumber = await userService.getUserbyCredentials(where);
+
+  if (checkUniquePhoneNumber) {
+    throw new InvariantError("Phone Number already existed");
+  }
+
   const createUsers = await userService.createUser(
     username,
     email,
+    phone_number,
     bcrypt.hashSync(password, salt),
     fullName,
     profilePicture
@@ -57,6 +68,7 @@ export const createUsers = async (req = request, res = response) => {
       app_name: process.env.APP_NAME,
       id: createUsers.id,
       email: createUsers.email,
+      phone_number: createUsers.phone_number,
       username: username,
     },
     process.env.API_SECRET
