@@ -7,8 +7,8 @@ class LikeService {
     this.#likeModels = likeModels;
   }
 
-  async getLike(user_id, story_id) {
-    return await this.#likeModels.findMany({ where: { user_id, story_id } });
+  async getLike(story_id) {
+    return await this.#likeModels.findMany({ where: { story_id } });
   }
 
   async getLikeById(id) {
