@@ -28,6 +28,11 @@ export const addLike = async (req = request, res = response) => {
   }
 
   await likeService.addLike(parseInt(user_id), parseInt(story_id));
+  checkStoryId.like_count++;
+  await storyService.updateLikeStory(
+    parseInt(story_id),
+    checkStoryId.like_count
+  );
   return res.status(201).json({
     status: true,
     message: "Successfully add like",
