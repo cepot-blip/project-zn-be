@@ -18,6 +18,23 @@ class StoryService {
             category_name: true,
           },
         },
+        users: {
+          select: {
+            id: true,
+            fullName: true,
+            avatar: {
+              select: {
+                image_link: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            comment: true,
+            bookmark: true,
+          },
+        },
       },
     });
   }
@@ -29,6 +46,23 @@ class StoryService {
         category: {
           select: {
             category_name: true,
+          },
+        },
+        users: {
+          select: {
+            id: true,
+            fullName: true,
+            avatar: {
+              select: {
+                image_link: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            comment: true,
+            bookmark: true,
           },
         },
       },

@@ -24,15 +24,12 @@ export const addLike = async (req = request, res = response) => {
     parseInt(story_id)
   );
   if (checkAvailabilityLike) {
-    throw new ClientError("You have liked this story");
+    throw new ClientError("You have already liked this story");
   }
 
   await likeService.addLike(parseInt(user_id), parseInt(story_id));
-  checkStoryId.like_count++;
-  await storyService.updateLikeStory(
-    parseInt(story_id),
-    checkStoryId.like_count
-  );
+  const updatedLikeCount = checkStoryId.like_count + 1;
+  await storyService.updateLikeStory(parseInt(story_id), updatedLikeCount);
   return res.status(201).json({
     status: true,
     message: "Successfully add like",
