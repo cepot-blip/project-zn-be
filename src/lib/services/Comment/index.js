@@ -13,11 +13,35 @@ class CommentService {
       orderBy: { id: "desc" },
       skip: parseInt(skip),
       take: parseInt(limit),
+      include: {
+        users: {
+          select: {
+            id: true,
+            fullName: true,
+            avatar: {
+              select: { image_link: true },
+            },
+          },
+        },
+      },
     });
   }
 
   async getCommentById(id, story_id) {
-    return await this.#CommentModels.findUnique({ where: { id, story_id } });
+    return await this.#CommentModels.findUnique({
+      where: { id, story_id },
+      include: {
+        users: {
+          select: {
+            id: true,
+            fullName: true,
+            avatar: {
+              select: { image_link: true },
+            },
+          },
+        },
+      },
+    });
   }
 
   async createComment(user_id, story_id, content) {

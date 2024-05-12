@@ -56,6 +56,13 @@ class UserService {
             commentAt: true,
           },
         },
+        avatar: {
+          select: {
+            id: true,
+            user_id: true,
+            image_link: true,
+          },
+        },
       },
     });
   }
