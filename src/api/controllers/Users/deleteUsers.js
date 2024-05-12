@@ -1,6 +1,8 @@
 import { request, response } from "express";
 import userService from "../../../lib/services/User";
 import NotFoundError from "../../../utils/exceptions/NotFoundError";
+import tokenize from "../../../utils/tokenize";
+import AuthorizationError from "../../../utils/exceptions/AuthorizationError";
 
 /**
  * @function deleteUsers ini digunakan untuk menghapus data user
@@ -16,7 +18,7 @@ import NotFoundError from "../../../utils/exceptions/NotFoundError";
 export const deleteUsers = async (req = request, res = response) => {
   try {
     const { id } = await req.params;
-    const checkUniqueId = await userService.checkUserbyId(parseInt(id));
+    const checkUniqueId = await userService.getUserById(parseInt(id));
 
     if (!checkUniqueId) {
       throw new NotFoundError("Id not found!");

@@ -60,21 +60,23 @@ class UserService {
     });
   }
 
-  async checkUserbyId(id) {
-    return await this.#userModel.findUnique({
-      where: { id: id },
-    });
+  async getUserbyCredentials(where) {
+    return await this.#userModel.findUnique({ where });
   }
 
-  async getUserbyEmail(email) {
-    return await this.#userModel.findUnique({ where: { email: email } });
-  }
-
-  async createUser(username, email, password, fullName, profilePicture) {
+  async createUser(
+    username,
+    email,
+    phone_number,
+    password,
+    fullName,
+    profilePicture
+  ) {
     return await this.#userModel.create({
       data: {
         username,
         email,
+        phone_number,
         password,
         fullName,
         profilePicture,
@@ -82,19 +84,26 @@ class UserService {
     });
   }
 
-  async updateUserById(id, username, email, fullName, profilePicture) {
+  async updateUserById(
+    id,
+    username,
+    email,
+    phone_number,
+    fullName,
+    profilePicture
+  ) {
     await this.#userModel.update({
       where: { id },
-      data: { username, email, fullName, profilePicture },
+      data: { username, email, phone_number, fullName, profilePicture },
     });
   }
 
-  async changePassword(email, password) {
-    await this.#userModel.update({ where: { email }, data: { password } });
+  async changePassword(where, password) {
+    await this.#userModel.update({ where, data: { password } });
   }
 
   async deleteUserById(id) {
-    await this.#userModel.delete({ where: { id } });
+    await this.#userModel.delete({ where: { id: id } });
   }
 
   async countTotalDataUser() {
