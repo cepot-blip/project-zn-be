@@ -18,9 +18,7 @@ class CommentService {
           select: {
             id: true,
             fullName: true,
-            avatar: {
-              select: { image_link: true },
-            },
+            profilePicture: true,
           },
         },
       },
@@ -35,9 +33,7 @@ class CommentService {
           select: {
             id: true,
             fullName: true,
-            avatar: {
-              select: { image_link: true },
-            },
+            profilePicture: true,
           },
         },
       },
