@@ -22,11 +22,7 @@ class StoryService {
           select: {
             id: true,
             fullName: true,
-            avatar: {
-              select: {
-                image_link: true,
-              },
-            },
+            profilePicture: true,
           },
         },
         _count: {
@@ -52,11 +48,7 @@ class StoryService {
           select: {
             id: true,
             fullName: true,
-            avatar: {
-              select: {
-                image_link: true,
-              },
-            },
+            profilePicture: true,
           },
         },
         _count: {

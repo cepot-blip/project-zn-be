@@ -43,7 +43,6 @@ model Users {
 model Story {
   id          Int      @id @default(autoincrement())
   user_id     Int
-  title       String
   content     String
   image_link  String
   like_count  Int      @default(0)
