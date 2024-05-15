@@ -14,6 +14,7 @@ import tag_routes from "./Tag/tagRoutes";
 import reStory_routes from "./ReStory/reStoryRoutes";
 import following_routes from "./Following/followingRoutes";
 import like_routes from "./Like/likeRoutes";
+import image_upload_routes from "./ImageUpload/imageUploadRoutes";
 
 const routes = [
   users_routes,
@@ -32,6 +33,7 @@ const routes = [
   reStory_routes,
   following_routes,
   like_routes,
+  image_upload_routes,
 ];
 
 const router = (app) => {

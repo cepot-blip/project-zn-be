@@ -28,7 +28,7 @@ const getNotifications = async (req = request, res = response) => {
   );
 
   return res.status(200).json({
-    success: true,
+    status: true,
     message: "Get notifications successfully",
     data: notifications,
     pagination: {

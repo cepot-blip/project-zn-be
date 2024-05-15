@@ -1,3 +1,4 @@
+import path from "path";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -41,12 +42,14 @@ app.use(
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: false }));
 
+app.use(express.static(path.join(__dirname, "../public")));
+
 // ROUTES
 router(app);
 
 // 404 NOT FOUND
 app.get("*", (req, res) => {
-  res.status(404).json({
+  return res.status(404).json({
     status: false,
     message: "Halaman tidak ditemukan",
   });

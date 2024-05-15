@@ -3,3 +3,7 @@ export const catchAsync = (fn) => {
     fn(req, res, next).catch(next);
   };
 };
+
+export const destImageLink = (path) => {
+  return path.split("\\").slice(-2).join("/");
+};
