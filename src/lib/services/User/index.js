@@ -17,7 +17,6 @@ class UserService {
         story: {
           select: {
             id: true,
-            title: true,
             content: true,
             image_link: true,
             category_id: true,
@@ -42,7 +41,6 @@ class UserService {
         story: {
           select: {
             id: true,
-            title: true,
             content: true,
             image_link: true,
             category_id: true,
