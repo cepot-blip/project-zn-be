@@ -7,29 +7,34 @@ import ClientError from "../../../utils/exceptions/ClientError";
 import LikeValidation from "../../../validation/Like";
 
 export const addLike = async (req = request, res = response) => {
-  const { storyId: story_id } = req.params;
+  const { storyId } = req.params;
+  const story_id = parseInt(storyId);
 
   const jwtToken = req.headers.authorization;
   const { id: user_id } = await tokenize.decodeJWT(jwtToken);
 
-  LikeValidation.validatePayloadLike({ user_id, story_id });
-
-  const checkStoryId = await storyService.getStoryById(parseInt(story_id));
-  if (!checkStoryId) {
-    throw new NotFoundError("Story not found, put valid id");
+  const checkStory = await storyService.getStoryById(story_id);
+  if (!checkStory) {
+    throw new NotFoundError("Story not found");
   }
 
-  const checkAvailabilityLike = await likeService.checkAvailabilityLike(
-    parseInt(user_id),
-    parseInt(story_id)
-  );
-  if (checkAvailabilityLike) {
-    throw new ClientError("You have already liked this story");
+  const checkLike = await likeService.checkAvailabilityLike(user_id, story_id);
+  if (checkLike) {
+    throw new ClientError("You already like this story");
   }
 
-  await likeService.addLike(parseInt(user_id), parseInt(story_id));
-  const updatedLikeCount = checkStoryId.like_count + 1;
-  await storyService.updateLikeStory(parseInt(story_id), updatedLikeCount);
+  try {
+    await likeService.addLike(user_id, story_id);
+    const like_count = await likeService.getStoryLikes(story_id);
+
+    if (like_count && like_count.length > 0) {
+      await storyService.updateLikeStory(story_id, like_count.length);
+    }
+  } catch (error) {
+    console.error("Error updating like count:", error);
+    throw new ClientError("Failed to update like count");
+  }
+
   return res.status(201).json({
     status: true,
     message: "Successfully add like",

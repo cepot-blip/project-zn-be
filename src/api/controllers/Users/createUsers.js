@@ -1,6 +1,7 @@
 import { request, response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import cryptojs from "crypto-js";
 import env from "dotenv";
 import UserValidation from "../../../validation/User";
 import userService from "../../../lib/services/User";
@@ -74,9 +75,14 @@ export const createUsers = async (req = request, res = response) => {
     process.env.API_SECRET
   );
 
+  const hashToken = await cryptojs.AES.encrypt(
+    token,
+    process.env.API_SECRET
+  ).toString();
+
   res.status(201).json({
     success: true,
     msg: "Successfully created users!",
-    token: token,
+    token: hashToken,
   });
 };
