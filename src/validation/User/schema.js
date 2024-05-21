@@ -38,19 +38,19 @@ const loginUserSchema = Joi.object({
 
 const updateUserSchema = Joi.object({
   id: Joi.number().required(),
-  username: Joi.string().required(),
+  username: Joi.string().optional(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ["com", "net"] },
+      tlds: { allow: ["com"] },
     })
-    .required(),
+    .optional(),
   phone_number: Joi.string()
     .pattern(/^(08|628)\d+$/)
     .min(10)
     .max(14)
-    .required(),
-  fullName: Joi.string().required(),
+    .optional(),
+  fullName: Joi.string().optional(),
   profilePicture: Joi.string().allow("", null).optional(),
 });
 
