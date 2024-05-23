@@ -4,11 +4,9 @@ import NotFoundError from "../../../utils/exceptions/NotFoundError";
 import tokenize from "../../../utils/tokenize";
 import likeService from "../../../lib/services/Like";
 import ClientError from "../../../utils/exceptions/ClientError";
-import LikeValidation from "../../../validation/Like";
 
 export const addLike = async (req = request, res = response) => {
-  const { storyId } = req.params;
-  const story_id = parseInt(storyId);
+  const story_id = parseInt(req.params.storyId);
 
   const jwtToken = req.headers.authorization;
   const { id: user_id } = await tokenize.decodeJWT(jwtToken);
@@ -23,16 +21,12 @@ export const addLike = async (req = request, res = response) => {
     throw new ClientError("You already like this story");
   }
 
-  try {
-    await likeService.addLike(user_id, story_id);
-    const like_count = await likeService.getStoryLikes(story_id);
+  await likeService.addLike(user_id, story_id);
+  const like_count = await likeService.totalLikebyStoryId(story_id);
 
-    if (like_count && like_count.length > 0) {
-      await storyService.updateLikeStory(story_id, like_count.length);
-    }
-  } catch (error) {
-    console.error("Error updating like count:", error);
-    throw new ClientError("Failed to update like count");
+  const data = { like_count: like_count };
+  if (like_count) {
+    await storyService.updateStory(story_id, data);
   }
 
   return res.status(201).json({

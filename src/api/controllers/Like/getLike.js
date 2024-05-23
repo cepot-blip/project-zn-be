@@ -12,12 +12,11 @@ export const getLike = async (req = request, res = response) => {
     throw new NotFoundError("Story not found, put valid ID");
   }
 
-  const result = await likeService.getLikeById(parseInt(story_id));
+  const result = await likeService.getStoryLikes(parseInt(story_id));
 
   return res.status(201).json({
     status: true,
     message: "Get like successfully",
-    total_data: result.length,
     query: result,
   });
 };

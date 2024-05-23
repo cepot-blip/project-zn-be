@@ -80,10 +80,6 @@ class StoryService {
   async totalStoryData() {
     return await this.#StoryModels.count();
   }
-
-  async updateLikeStory(id, like_count) {
-    await this.#StoryModels.update({ where: { id }, data: { like_count } });
-  }
 }
 
 const storyService = new StoryService(StoryModels);

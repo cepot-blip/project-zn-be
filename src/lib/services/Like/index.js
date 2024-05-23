@@ -28,6 +28,10 @@ class LikeService {
       where: { user_id_story_id: { user_id, story_id } },
     });
   }
+
+  async totalLikebyStoryId(story_id) {
+    return await this.#likeModels.count({ where: { story_id: story_id } });
+  }
 }
 
 const likeService = new LikeService(likeModels);
