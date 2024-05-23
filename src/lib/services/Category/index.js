@@ -16,7 +16,7 @@ class CategoryService {
   }
 
   async createCategory(data) {
-    await this.#CategoryModels.create({ data });
+    return await this.#CategoryModels.create({ data });
   }
 
   async updateCategory(id, data) {

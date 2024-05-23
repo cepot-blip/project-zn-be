@@ -7,9 +7,15 @@ export const createCategory = async (req = request, res = response) => {
   CategoryValidation.validatePayloadCategory({ category_name, description });
 
   const data = { category_name, description };
-  await categoryService.createCategory(data);
+  const newCategory = await categoryService.createCategory(data);
+
   return res.status(201).json({
     status: true,
     message: "Successfully create category",
+    query: {
+      id: newCategory.id,
+      category_name: newCategory.category_name,
+      description: newCategory.description,
+    },
   });
 };
