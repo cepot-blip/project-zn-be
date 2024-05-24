@@ -15,8 +15,12 @@ class CategoryService {
     return await this.#CategoryModels.findUnique({ where: { id } });
   }
 
-  async createCategory(data) {
-    return await this.#CategoryModels.create({ data });
+  async getCategorybyName(category_name) {
+    return await this.#CategoryModels.findFirst({ where: { category_name } });
+  }
+
+  async createCategory(category_name) {
+    return await this.#CategoryModels.create({ data: { category_name } });
   }
 
   async updateCategory(id, data) {

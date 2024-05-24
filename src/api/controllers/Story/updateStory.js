@@ -30,10 +30,11 @@ export const updateStory = async (req = request, res = response) => {
   if (!verifyStorybyUserId)
     throw new AuthorizationError("User not authorized to access");
 
-  const checkCategory = await categoryService.getCategoryById(
-    parseInt(category_id)
-  );
-  if (!checkCategory) {
+  const checkCategoryById =
+    category_id != null
+      ? await categoryService.getCategoryById(category_id)
+      : null;
+  if (!checkCategoryById && category_id != null) {
     throw new NotFoundError("Category not found, put valid id");
   }
 
