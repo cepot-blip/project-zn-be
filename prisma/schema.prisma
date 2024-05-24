@@ -46,12 +46,12 @@ model Story {
   content     String
   image_link  String
   like_count  Int      @default(0)
-  category_id Int
+  category_id Int?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  users    Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  users    Users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
 
   comment  Comment[]
   reaction Reaction[]
@@ -63,7 +63,6 @@ model Story {
 model Category {
   id            Int           @id @default(autoincrement())
   category_name CATEGORY_NAME
-  description   String
   created_at    DateTime      @default(now())
   updated_at    DateTime      @updatedAt
 

@@ -6,7 +6,7 @@ import NotFoundError from "../../../utils/exceptions/NotFoundError";
 import StoryValidation from "../../../validation/Story";
 
 export const createStory = async (req = request, res = response) => {
-  const { content, image_link = null, category_id } = await req.body;
+  const { content, image_link = null, category_id = null } = await req.body;
   StoryValidation.validatePayloadStory({
     content,
     image_link,
@@ -16,8 +16,11 @@ export const createStory = async (req = request, res = response) => {
   const token = await req.headers.authorization;
   const { id: user_id } = await tokenize.decodeJWT(token);
 
-  const checkCategoryById = await categoryService.getCategoryById(category_id);
-  if (!checkCategoryById) {
+  const checkCategoryById =
+    category_id != null
+      ? await categoryService.getCategoryById(category_id)
+      : null;
+  if (!checkCategoryById && category_id != null) {
     throw new NotFoundError("Category not found, put valid id");
   }
 

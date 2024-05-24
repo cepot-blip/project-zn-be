@@ -5,7 +5,7 @@ const payloadSchema = Joi.object({
     "any.required": "content is required",
   }),
   image_link: Joi.string().allow("", null).optional(),
-  category_id: Joi.number().optional(),
+  category_id: Joi.number().allow(null).optional(),
 });
 
 export { payloadSchema };

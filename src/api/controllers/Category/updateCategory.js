@@ -2,20 +2,26 @@ import { request, response } from "express";
 import categoryService from "../../../lib/services/Category";
 import NotFoundError from "../../../utils/exceptions/NotFoundError";
 import CategoryValidation from "../../../validation/Category";
+import InvariantError from "../../../utils/exceptions/InvariantError";
 
 export const updateCategory = async (req = request, res = response) => {
-  const { id } = req.params;
-  const { category_name, description } = req.body;
-  CategoryValidation.validatePayloadCategory({ category_name, description });
+  const id = parseInt(req.params.id);
+  const { category_name } = req.body;
+  CategoryValidation.validatePayloadCategory({ category_name });
 
-  const checkCategoryId = await categoryService.getCategoryById(parseInt(id));
+  const checkCategoryId = await categoryService.getCategoryById(id);
   if (!checkCategoryId) {
     throw new NotFoundError("Category not found, put valid id");
   }
+  const checkCategoryDuplicate = await categoryService.getCategorybyName(
+    category_name
+  );
+  if (checkCategoryDuplicate) {
+    throw new InvariantError("Category already exist");
+  }
 
-  await categoryService.updateCategory(parseInt(id), {
+  await categoryService.updateCategory(id, {
     category_name,
-    description,
   });
 
   return res.status(200).json({
