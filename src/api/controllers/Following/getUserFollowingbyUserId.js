@@ -23,5 +23,11 @@ export const getUserFollowingbyUserId = async (
     throw new ClientError("User is not following");
   }
 
-  return res.status(200).json({ status: true, message: "User is following" });
+  return res
+    .status(200)
+    .json({
+      status: true,
+      message: "User is following",
+      data: checkUserFollowing,
+    });
 };

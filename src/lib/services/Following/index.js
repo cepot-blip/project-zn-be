@@ -43,6 +43,15 @@ class FollowingService {
           following_user_id,
         },
       },
+      include: {
+        following_user: {
+          select: {
+            id: true,
+            fullName: true,
+            profilePicture: true,
+          },
+        },
+      },
     });
   }
 }
