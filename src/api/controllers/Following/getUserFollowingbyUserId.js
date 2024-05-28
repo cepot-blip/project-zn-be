@@ -1,6 +1,7 @@
 import { response, request } from "express";
 import tokenize from "../../../utils/tokenize";
 import followingService from "../../../lib/services/Following";
+import ClientError from "../../../utils/exceptions/ClientError";
 
 export const getUserFollowingbyUserId = async (
   req = request,
@@ -12,19 +13,15 @@ export const getUserFollowingbyUserId = async (
   const loginUser = await tokenize.decodeJWT(jwtToken);
 
   if (user_id === loginUser.id) {
-    return res
-      .status(400)
-      .json({ status: false, message: "You cannot follow yourself" });
+    throw new ClientError("You cannot follow yourself");
   }
   const checkUserFollowing = await followingService.checkFollowing(
     user_id,
     loginUser.id
   );
-
-  if (checkUserFollowing) {
-    return res.status(200).json({ status: true, message: "User is following" });
+  if (!checkUserFollowing) {
+    throw new ClientError("User is not following");
   }
-  return res
-    .status(400)
-    .json({ status: false, message: "User is not following" });
+
+  return res.status(200).json({ status: true, message: "User is following" });
 };
