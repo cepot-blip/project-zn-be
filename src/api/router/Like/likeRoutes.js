@@ -8,7 +8,7 @@ import { catchAsync } from "../../../utils";
 const like_routes = express.Router();
 
 like_routes.post("/stories/:storyId/like", authCheck, catchAsync(addLike));
-like_routes.get("/stories/:storyId/like", authCheck, catchAsync(getLike));
+like_routes.get("/like", authCheck, catchAsync(getLike));
 like_routes.delete(
   "/stories/:storyId/like/:id",
   authCheck,
