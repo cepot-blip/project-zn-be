@@ -18,9 +18,11 @@ class LikeService {
       include: {
         story: true,
         user: {
-          id: true,
-          fullName: true,
-          profilePicture: true,
+          select: {
+            id: true,
+            fullName: true,
+            profilePicture: true,
+          },
         },
       },
     });
