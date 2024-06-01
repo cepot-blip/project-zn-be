@@ -14,7 +14,16 @@ class LikeService {
   }
 
   async getLikes() {
-    return await this.#likeModels.findMany();
+    return await this.#likeModels.findMany({
+      include: {
+        story: true,
+        user: {
+          id: true,
+          fullName: true,
+          profilePicture: true,
+        },
+      },
+    });
   }
 
   async getLikeById(id) {
