@@ -38,6 +38,8 @@ model Users {
   reStory           ReStory[]
   follower_user_id  Following[]     @relation("user_follower")
   following_user_id Following[]     @relation("user_following")
+
+  CommunityMembership CommunityMembership[]
 }
 
 model Story {
@@ -53,11 +55,12 @@ model Story {
   users    Users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   category Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
 
-  comment  Comment[]
-  reaction Reaction[]
-  bookmark Bookmark[]
-  like     Like[]
-  ReStory  ReStory[]
+  comment         Comment[]
+  reaction        Reaction[]
+  bookmark        Bookmark[]
+  like            Like[]
+  ReStory         ReStory[]
+  CommunityTweets CommunityTweets[]
 }
 
 model Category {
@@ -219,6 +222,41 @@ model Following {
   following_user Users @relation("user_following", fields: [following_user_id], references: [id], onDelete: Cascade)
 
   @@unique([follower_user_id, following_user_id])
+}
+
+model Community {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members         CommunityMembership[]
+  communityTweets CommunityTweets[]
+}
+
+model CommunityMembership {
+  id           Int      @id @default(autoincrement())
+  community_id Int
+  user_id      Int
+  joinedAt     DateTime @default(now())
+
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade)
+  user      Users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([community_id, user_id])
+}
+
+model CommunityTweets {
+  id           Int      @id @default(autoincrement())
+  community_id Int
+  story_id     Int
+  createdAt    DateTime @default(now())
+
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade)
+  story     Story     @relation(fields: [story_id], references: [id], onDelete: Cascade)
+
+  @@unique([community_id, story_id])
 }
 
 enum PLATFORM_NAME {

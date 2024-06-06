@@ -10,7 +10,6 @@ export const createCategory = async (req = request, res = response) => {
   const checkCategoryDuplicate = await categoryService.getCategorybyName(
     category_name
   );
-  console.log(checkCategoryDuplicate);
   if (checkCategoryDuplicate) {
     throw new InvariantError("Category already exist");
   }

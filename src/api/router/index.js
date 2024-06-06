@@ -15,6 +15,9 @@ import reStory_routes from "./ReStory/reStoryRoutes";
 import following_routes from "./Following/followingRoutes";
 import like_routes from "./Like/likeRoutes";
 import image_upload_routes from "./ImageUpload/imageUploadRoutes";
+import community_routes from "./Community/communityRoutes";
+import community_tweet_routes from "./CommunityTweets/communityTweetsRoutes";
+import community_membership_routes from "./CommunityMembership/communityMembershipRoutes";
 
 const routes = [
   users_routes,
@@ -34,6 +37,9 @@ const routes = [
   following_routes,
   like_routes,
   image_upload_routes,
+  community_routes,
+  community_membership_routes,
+  community_tweet_routes,
 ];
 
 const router = (app) => {

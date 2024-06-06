@@ -20,3 +20,7 @@ export const storyTagModels = new PrismaClient().story_tag;
 export const ReStoryModels = new PrismaClient().reStory;
 export const followingModels = new PrismaClient().following;
 export const likeModels = new PrismaClient().like;
+
+export const communityModel = new PrismaClient().community;
+export const communityMembershipModel = new PrismaClient().communityMembership;
+export const communityTweetsModel = new PrismaClient().communityTweets;
